@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const { encrypt } = require('../utils/encrypt');
 
 module.exports = (sequelize) => {
   class User extends Model {}
@@ -11,10 +12,16 @@ module.exports = (sequelize) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      set(value) {
+        this.setDataValue('password', encrypt(value));
+      },
     },
   }, { sequelize, modelName: 'User', timestamps: false });
 };

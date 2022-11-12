@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { SECRET_KEY } = require('../config');
+const { JWT_KEY } = require('../config');
 
 const unknownEndpoint = (req, res) => {
   res.status(404).json({ msg: 'Unknow end point' });
@@ -24,11 +24,11 @@ const verifyToken = (req, res, next) => {
   if (token == null) {
     res.status(403).json({ msg: 'Auth Error' });
   } else {
-    jwt.verify(token, SECRET_KEY, (err, user) => {
+    jwt.verify(token, JWT_KEY, (err, id) => {
       if (err) {
         res.status(404).json({ msg: 'Token Error' });
       } else {
-        req.user = user;
+        req.id = id;
         next();
       }
     });
