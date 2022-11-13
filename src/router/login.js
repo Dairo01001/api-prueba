@@ -26,21 +26,19 @@ loginRouter.post('/singup', async (req, res) => {
 loginRouter.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await findByEmail(email);
-
+  console.log(user);
   if (!user) {
-    if (password === decrypt(user.password)) {
-      jwt.sign(user.id, JWT_KEY, (err, token) => {
-        if (err) {
-          res.status(400).json({ msg: 'Error' });
-        } else {
-          res.json({ ...user, token });
-        }
-      });
-    } else {
-      res.status(400).json({ msg: 'password incorrect' });
-    }
-  } else {
     res.status(400).json({ msg: 'user does not exist' });
+  } else if (password === decrypt(user.password)) {
+    jwt.sign(user.id, JWT_KEY, (err, token) => {
+      if (err) {
+        res.status(400).json({ msg: 'Error' });
+      } else {
+        res.json({ ...user.dataValues, token });
+      }
+    });
+  } else {
+    res.status(400).json({ msg: 'password incorrect' });
   }
 });
 
