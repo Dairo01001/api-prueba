@@ -26,11 +26,11 @@ productRouter.put('/', verifyToken, async (req, res) => {
 });
 
 productRouter.post('/', async (req, res) => {
-  const product = findByTitle(req.body.title);
+  const product = await findByTitle(req.body.title);
   if (!product) {
     res.json(await createProduct(req.body));
   } else {
-    res.status(404).json({ msg: 'The product already exists' });
+    res.status(404).json({ msg: 'The product already exists', product });
   }
 });
 
